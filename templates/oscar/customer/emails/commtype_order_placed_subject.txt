@@ -1,0 +1,1 @@
+{% load i18n %}Order has been placed {{ order.number }}

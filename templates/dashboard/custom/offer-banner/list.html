@@ -1,0 +1,71 @@
+.{% extends 'oscar/dashboard/layout.html' %}
+{% load i18n %}
+{% load render_table from django_tables2 %}
+{% load category_tags %}
+
+{% block title %}
+{{ title }} | {% trans "Create Attribute Option Group" %} | {{ block.super }}
+{% endblock %}
+{% block body_class %}Offer Banners {{ block.super }} Offer Banners{% endblock %}
+{% block navbar %}
+{% if not is_popup %}
+{{ block.super }}
+{% endif %}
+{% endblock %}
+{% block dashboard_nav %}
+{% if not is_popup %}
+{{ block.super }}
+{% endif %}
+{% endblock %}
+{% block breadcrumbs %}
+<ul class="breadcrumb">
+    <li><a href="{% url 'dashboard:index' %}">{% trans "Dashboard" %}</a></li>
+    <li class="active">{% trans "Offer Banners" %}</li>
+</ul>
+{% endblock %}
+
+{% block header %}
+<div class="page-header">
+    <a href="{% url 'dashboard-custom:dashboard-offer-banner-create' %}" class="btn btn-primary btn-lg pull-right"><i class="icon-plus"></i> {% trans "Create new Banner" %}</a>
+    <h1>{% trans "Offer Banners" %}</h1>
+</div>
+{% endblock header %}
+
+{% block dashboard_content %}
+
+{% if banner_list %}
+<div class="container-fluid">
+    {% regroup banner_list by get_display_area_display as banner_display_area_regrouped_list %}
+    {% for display_area_banner in banner_display_area_regrouped_list %}
+    <div class="row">
+        <h3> {{ display_area_banner.grouper }} </h3>
+        <div style="padding-left: 30px">
+            {% regroup display_area_banner.list by get_position_display as display_area_banner %}
+            {% for banner in display_area_banner %}
+            <div class="col-md-4">
+                <h4> {{ banner.grouper }} </h4>
+                {% for positioned_banner in banner.list %}
+                <table class="table ">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <img src="{{ positioned_banner.banner.url }}" alt="" height="120px" width="auto">
+                        </td>
+                        <td>
+                            <a href="{% url 'dashboard-custom:dashboard-offer-banner-detail' pk=positioned_banner.pk %}" class="btn btn-info btn-sm" > Edit </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>{% trans "Add your first Product Banner." %}</p>
+{% endif %}
+
+{% endblock dashboard_content %}

@@ -1,0 +1,40 @@
+{% extends 'oscar/dashboard/layout.html' %}
+{% load i18n %}
+{% block header %}
+    <div class="page-header">
+        <h1> Brochure </h1>
+    </div>
+{% endblock header %}
+
+{% block dashboard_content %}
+    <div class="table-header">
+        <h2>{{ title }}</h2>
+    </div>
+    <div class="well">
+        {% include 'oscar/dashboard/partials/form.html' with includes_files=1 class='wysiwyg' %}
+    </div>
+
+ <table class="table">
+                    <thead class=" text-primary">
+                     <th scope="col">#</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Pdf</th>
+                    </thead>
+                    <tbody>
+
+                    {% for data in brochure %}
+                        <tr>
+                          <td>{{ forloop.counter }}</td>
+                          <td>{{ data.name }}</td>
+                          <td><img style="width:100px;height:100px;"  src="{{ data.image_url }}"></td>
+                          <td>{{ data.type }}</td>
+                          <td><img src="{{ data.file.url }}"></td>
+                            <td><a class="btn btn-danger" href="{% url 'dashboard-custom:dashboard-brochure-update' data.pk %}">Edit</a></td>
+                            <td><a class="btn btn-danger" href="{% url 'dashboard-custom:dashboard-brochure-delete' data.pk %}">Delete</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+{% endblock dashboard_content %}

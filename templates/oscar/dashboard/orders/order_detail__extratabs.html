@@ -1,0 +1,257 @@
+{% load currency_filters %}
+
+<div class="tab-pane {% if active_tab == 'howto' %}active{% endif %}" id="return">
+    <div class="well">
+        <h3> Return </h3>
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr>
+                <th></th>
+                <!--        <th title="Enter the quantity you want to affect the change with below action" style="cursor:crosshair">
+                        <span>Selected QTY?</span> </th>-->
+                <th>Line ID</th>
+                <th>Quantity</th>
+                <th>Product</th>
+                <th>Status</th>
+                <th>Supplier</th>
+                <th>Supplier SKU</th>
+                <th>Est. dispatch date</th>
+                <th>Price excl tax (before discounts)</th>
+                <th>Price inc tax (before discounts)</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for line in order.cancelled_order_lines %}
+            <tr class="line_tr">
+                <td>
+
+                </td>
+                <td><a href="{% url 'dashboard:order-line-detail' number=order.number line_id=line.id %}">#{{ line.id }}</a></td>
+                <td class="text-center"
+                    style="cursor:crosshair"
+                    title="{{ line.active_quantity }} items out of {{ line.quantity }} remains in the order. {{ line.refunded_quantity }} Returned or Refunded.">
+                    <b>{{ line.quantity }}</b>
+                </td>
+                <td>
+                    {% if line.product %}
+                    <a href="{% url 'dashboard:catalogue-product' pk=line.product.id %}">{{ line.title }}</a>
+                    {% else %}
+                    {{ line.title }}
+                    {% endif %}
+                </td>
+                <td>
+                    {{ line.status|default:"-" }}
+                </td>
+                <td>
+                    {% if line.partner %}
+                    <a href="{% url 'dashboard:partner-manage' pk=line.partner.id %}">{{ line.partner_name }}</a>
+                    {% else %}
+                    {{ line.partner_name }}
+                    {% endif %}
+                </td>
+                <td>{{ line.partner_sku }}</td>
+                <td>{{ line.est_dispatch_date|default:"-" }}</td>
+                <td class="text-right">{{ line.line_price_before_discounts_excl_tax|currency:order.currency }}</td>
+                <td class="text-right">{{ line.line_price_before_discounts_incl_tax|currency:order.currency }}</td>
+                <td>
+                    <a href="{% url 'dashboard:order-line-detail' number=order.number line_id=line.id %}" class="btn btn-info">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+                <tr>
+                    <td colspan="7"></td>
+                    <th>Cancelled Amount</th>
+                    <td class="text-right">{{ order.cancelled_order_amount_excl_tax|currency:order.currency }}</td>
+                    <td class="text-right">{{ order.cancelled_order_amount_incl_tax|currency:order.currency }}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="7"></td>
+                    <th>Order total</th>
+                    <th class="text-right">{{ order.total_excl_tax|currency:order.currency }}</th>
+                    <th class="text-right">{{ order.total_incl_tax|currency:order.currency }}</th>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="7"></td>
+                    <th>Net Order Amount</th>
+                    <td class="text-right">{{ order.balance_order_amount_after_cancelled_excl_tax|currency:order.currency }}</td>
+                    <td class="text-right">{{ order.balance_order_amount_after_cancelled_incl_tax|currency:order.currency }}</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+<div class="tab-pane {% if active_tab == 'howto' %}active{% endif %}" id="howto">
+    <div class="well">
+        <h3> How to manage orders ? Guidelines</h3>
+
+        <div class="form-group">
+            <div class="">
+                <table class="table table-bordered">
+                    <caption> Lets look into order flow.</caption>
+                    <thead>
+                    <tr style="display:none;">
+                        <th></th>
+                        <!--  to avoid js generated checkbox -->
+                    </tr>
+                    <tr>
+                        <th>Status</th>
+                        <th>Possible Statuses.</th>
+                        <th>Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Placed</td>
+                        <td>
+                            <ol>
+                                <li>Order Confirmed</li>
+                                <li>Canceled</li>
+                            </ol>
+                        </td>
+                        <td>
+                            This Status shows that user has generated an order.
+                            <code>You have to Confirm the order </code> after prepare your order parcel,
+                            or in emergancy cases you user or admin can cancel out the order here. The whole payment
+                            (other than refunding charges by gateway) against the order will be refunded within a period
+                            decided by gateway.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Order Confirmed</td>
+                        <td>
+                            <ol>
+                                <li>Out For Delivery</li>
+                                <li>Delivered</li>
+                                <li>Canceled</li>
+                            </ol>
+                        </td>
+                        <td>This state defines that, you have confirmed the order and the order will be dispatched
+                            soon from your inventory / store. Admin / Delivery boy (if present) can change this
+                            Status from ordered to mentioned Statuses.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Out For Delivery</td>
+                        <td>
+                            <ol>
+                                <li>Delivered</li>
+                                <li>Canceled</li>
+                            </ol>
+                        </td>
+                        <td>As understandable, this status, means, order is out for delivery.</td>
+                    </tr>
+                    <tr>
+                        <td>Delivered</td>
+                        <td>-</td>
+                        <td>Delivered. Nothing can be done more against the order.
+                            Refunding and Returns are against each item of order.</td>
+                    </tr>
+                    <tr>
+                        <td>Payment Declined</td>
+                        <td>-</td>
+                        <td>Description</td>
+                    </tr>
+                    <tr>
+                        <td>Canceled</td>
+                        <td>-</td>
+                        <td>The order hs been cancelled and Refunded. Nothing can be done more.</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+    <div class="well" >
+        <h3> How to manage Order Item Cancellation and Refunding? </h3>
+        <div class="form-group">
+            <div class="">
+                <table class="table table-bordered">
+                    <caption> Lets look into <b>OrderItem</b> flow.</caption>
+                    <thead>
+                    <tr style="display:none;"><th></th><!--  to avoid js generated checkbox --></tr>
+                    <tr>
+                        <th>Status</th>
+                        <th>Possible Statuses.</th>
+                        <th>Description</th>
+                        <th>Procedure</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Placed</td>
+                        <td>
+                            <ol>
+                                <li>Canceled</li>
+                            </ol>
+                        </td>
+                        <td>
+                            Admin / User can manually Cancel the selected Order Items when they are on 'Placed' Status.
+                        </td>
+                        <td>
+                            Select the "Order Contents" tab in "Order Details" Section . Select all the lines you want
+                            to cancel. Select "Change Line Status to" and choose status "Cancel" in
+                            "With selected lines" section. Cancellation of partial quantity is not possible, you can
+                            cancel only the whole Order Items. If you try to change status to an impossible status mode,
+                            system will show an error. This Placed status will continue as long as order getting
+                            "delivered" or "cancelled".
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> Delivered </td>
+                        <td> <ol><li> Return Initiated </li></ol> </td>
+                        <td>
+                            Mark item has delivered. After delivery.
+                        </td>
+                        <td>
+                            Select the items you want to Initiate return form "Order Contents" tab,
+                            Select "change line status: to "Deliverd" in "With selected lines" section.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td> Return Initiated </td>
+                        <td> <ol>
+                            <li> Returned </li>
+                            <li> Delivered </li>
+                        </ol> </td>
+                        <td>
+                            Either Admin or User can initiate a Return if user wants a return of an item.<br /><br />
+                            Return can be initialted by Setting the status to "Return Initiated". From here Return
+                            Can be cancelled by setting status to "Delivered". <br /><br />
+                            Or Accept the Return By setting Status to "Returned". Setting to "Return" will
+                            automatically Refunded.
+
+                        </td>
+                        <td>
+                            Select the items you want to Initiate return form "Order Contents" tab,
+                            Select "change line status: to "Return Initiated" in "With selected lines" section.
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Returned</td>
+                        <td>-</td>
+                        <td> The item has been returned and refunded. </td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Canceled</td>
+                        <td>-</td>
+                        <td> The item has been Cancelled. </td>
+                        <td>-</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>

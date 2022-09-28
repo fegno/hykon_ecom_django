@@ -1,0 +1,19 @@
+{% load currency_filters i18n %}Hello,
+
+We are happy to inform you the delivery of your order {{ order.number }} has been successfully completed!.
+
+
+{% for line in order.lines.all %} * {{ line.title }} -  {{ line.line_price_incl_tax|currency:order.currency }}
+{% endfor %}
+
+
+
+
+{% for field in order.shipping_address.active_address_fields %}  {{ field }}
+{% endfor %}
+
+{% if status_url %}
+You can view the status of this order at the below URL:
+{{ status_url }}
+{% endif %}
+

@@ -1,0 +1,19 @@
+{% extends "oscar/checkout/checkout.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Payment details" %} | {{ block.super }}
+{% endblock %}
+
+{% block checkout_nav %}
+    {% include 'oscar/checkout/nav.html' with step=3 %}
+{% endblock %}
+
+{% block checkout_title %}{% trans "Enter payment details" %}{% endblock %}
+{% block content %}
+
+    {% block payment_details_content %}
+        {% include 'oscar/checkout/razorpay/payment_details.html' %}
+    {% endblock %}
+
+{% endblock %}

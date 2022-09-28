@@ -1,0 +1,19 @@
+{% load currency_filters i18n %}Hello,
+
+We are pleased to confirm your order {{ order.number }} has been Packed.
+
+
+
+{% for line in order.lines.all %}
+{% endfor %}
+
+
+
+{% for field in order.shipping_address.active_address_fields %}  {{ field }}
+{% endfor %}
+
+{% if status_url %}
+You can view the status of this order at the below URL:
+{{ status_url }}
+{% endif %}
+
