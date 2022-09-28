@@ -191,3 +191,57 @@ class Orders(models.Model):
     class Meta:
         managed = False
         db_table = 'orders'
+
+class Coupons(models.Model):
+    coupon_code = models.CharField(max_length=250)
+    description = models.TextField(blank=True, null=True)
+    type = models.CharField(max_length=50, blank=True, null=True)
+    minimum_purchase_value = models.FloatField()
+    discount_type = models.CharField(max_length=20)
+    discount_percentage = models.IntegerField(blank=True, null=True)
+    discount_amount = models.FloatField(blank=True, null=True)
+    maximum_discount_value = models.FloatField()
+    start_date = models.DateField()
+    end_date = models.DateField()
+    terms = models.TextField(blank=True, null=True)
+    status = models.IntegerField()
+    created_by = models.IntegerField()
+    updated_by = models.IntegerField()
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'coupons'
+
+
+class Cart(models.Model):
+    warranty_parent = models.IntegerField(blank=True, null=True)
+    offer_parent = models.IntegerField(blank=True, null=True)
+    user_id = models.BigIntegerField()
+    product_offer_id = models.IntegerField(blank=True, null=True)
+    cart_offer_id = models.IntegerField(blank=True, null=True)
+    product_id = models.IntegerField()
+    quantity = models.IntegerField()
+    price = models.FloatField(blank=True, null=True)
+    retail_price = models.FloatField(blank=True, null=True)
+    sale_price = models.FloatField(blank=True, null=True)
+    created_at = models.DateTimeField()
+    updated_at = models.DateTimeField(blank=True, null=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'cart'
+
+class CancelOrderReasons(models.Model):
+    title = models.CharField(max_length=250)
+    display_order = models.IntegerField()
+    created_at = models.DateTimeField()
+    updated_at = models.DateTimeField()
+    deleted_at = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'cancel_order_reasons'

@@ -292,3 +292,56 @@ class Groups(models.Model):
     class Meta:
         managed = False
         db_table = 'groups'
+
+
+class Categories(models.Model):
+    category_code = models.CharField(max_length=250, blank=True, null=True)
+    parent_category_id = models.IntegerField(blank=True, null=True)
+    category_name = models.CharField(max_length=200)
+    slug = models.CharField(max_length=200)
+    priority = models.IntegerField()
+    type = models.CharField(max_length=100, blank=True, null=True)
+    policies = models.TextField(blank=True, null=True)
+    top_description = models.TextField(blank=True, null=True)
+    bottom_description = models.TextField(blank=True, null=True)
+    page_title = models.TextField(blank=True, null=True)
+    browser_title = models.CharField(max_length=500, blank=True, null=True)
+    meta_keywords = models.CharField(max_length=500, blank=True, null=True)
+    meta_description = models.TextField(blank=True, null=True)
+    tagline = models.TextField(blank=True, null=True)
+    banner_image = models.IntegerField(blank=True, null=True)
+    thumbnail_image = models.IntegerField(blank=True, null=True)
+    brochure_pdf = models.IntegerField(blank=True, null=True)
+    is_popular = models.IntegerField()
+    is_domestic = models.IntegerField()
+    is_corporate = models.IntegerField()
+    status = models.IntegerField()
+    created_at = models.DateTimeField()
+    updated_at = models.DateTimeField(blank=True, null=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'categories'
+
+class Brands(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    brand_code = models.CharField(max_length=250, blank=True, null=True)
+    brand_name = models.CharField(max_length=250)
+    slug = models.CharField(max_length=250)
+    website = models.CharField(max_length=250, blank=True, null=True)
+    media_id = models.IntegerField(blank=True, null=True)
+    page_heading = models.CharField(max_length=250, blank=True, null=True)
+    browser_title = models.CharField(max_length=250, blank=True, null=True)
+    meta_description = models.CharField(max_length=250, blank=True, null=True)
+    meta_keywords = models.CharField(max_length=520, blank=True, null=True)
+    status = models.IntegerField()
+    created_by = models.IntegerField(blank=True, null=True)
+    updated_by = models.IntegerField(blank=True, null=True)
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'brands'
